@@ -1,0 +1,23 @@
+//
+//  PrefixHeader.pch
+//  WangYangBitch
+//
+//  Created by 蒋永昌 on 9/7/16.
+//  Copyright © 2016 蒋永昌. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import "FMDB.h"
+#import "Singleton.h"
+#import "FMDBDataBase.h"
+
+#define k_width self.view.bounds.size.width
+#define k_height self.view.bounds.size.height
+
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* PrefixHeader_pch */
