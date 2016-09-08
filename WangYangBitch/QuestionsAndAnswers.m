@@ -10,6 +10,15 @@
 
 @implementation QuestionsAndAnswers
 
+-(instancetype)initWithDictionary:(NSDictionary *)dic{
+    self = [super init];
+    if (self) {
+        [self setValuesForKeysWithDictionary:dic];
+    }
+    return self;
+}
+
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"%@,%@,%@",self.letter,self.question,self.answer];

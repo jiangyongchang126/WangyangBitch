@@ -18,6 +18,10 @@
 		B35319FD1D80529900528A3F /* QuestionsAndAnswers.m in Sources */ = {isa = PBXBuildFile; fileRef = B35319FC1D80529900528A3F /* QuestionsAndAnswers.m */; };
 		B3531A031D80548200528A3F /* FMDBDataBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B3531A021D80548200528A3F /* FMDBDataBase.m */; };
 		B3531A071D805C6200528A3F /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B3531A061D805C6200528A3F /* MainNavigationController.m */; };
+		B371D87E1D81ADDC0090508C /* KVNProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = B371D8781D81ADDC0090508C /* KVNProgress.m */; };
+		B371D87F1D81ADDC0090508C /* KVNProgressView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B371D8791D81ADDC0090508C /* KVNProgressView.xib */; };
+		B371D8801D81ADDC0090508C /* UIImage+KVNEmpty.m in Sources */ = {isa = PBXBuildFile; fileRef = B371D87B1D81ADDC0090508C /* UIImage+KVNEmpty.m */; };
+		B371D8811D81ADDC0090508C /* UIImage+KVNImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = B371D87D1D81ADDC0090508C /* UIImage+KVNImageEffects.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +59,13 @@
 		B3531A041D80549200528A3F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B3531A051D805C6200528A3F /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		B3531A061D805C6200528A3F /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
+		B371D8771D81ADDC0090508C /* KVNProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVNProgress.h; sourceTree = "<group>"; };
+		B371D8781D81ADDC0090508C /* KVNProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVNProgress.m; sourceTree = "<group>"; };
+		B371D8791D81ADDC0090508C /* KVNProgressView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KVNProgressView.xib; sourceTree = "<group>"; };
+		B371D87A1D81ADDC0090508C /* UIImage+KVNEmpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+KVNEmpty.h"; sourceTree = "<group>"; };
+		B371D87B1D81ADDC0090508C /* UIImage+KVNEmpty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+KVNEmpty.m"; sourceTree = "<group>"; };
+		B371D87C1D81ADDC0090508C /* UIImage+KVNImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+KVNImageEffects.h"; sourceTree = "<group>"; };
+		B371D87D1D81ADDC0090508C /* UIImage+KVNImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+KVNImageEffects.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +173,7 @@
 		B3531A001D80546A00528A3F /* Commont */ = {
 			isa = PBXGroup;
 			children = (
+				B371D8761D81ADDC0090508C /* KVNhud */,
 				B35319FE1D80544C00528A3F /* Singleton.h */,
 				B3531A011D80548200528A3F /* FMDBDataBase.h */,
 				B3531A021D80548200528A3F /* FMDBDataBase.m */,
@@ -169,6 +181,20 @@
 				B3531A061D805C6200528A3F /* MainNavigationController.m */,
 			);
 			name = Commont;
+			sourceTree = "<group>";
+		};
+		B371D8761D81ADDC0090508C /* KVNhud */ = {
+			isa = PBXGroup;
+			children = (
+				B371D8771D81ADDC0090508C /* KVNProgress.h */,
+				B371D8781D81ADDC0090508C /* KVNProgress.m */,
+				B371D8791D81ADDC0090508C /* KVNProgressView.xib */,
+				B371D87A1D81ADDC0090508C /* UIImage+KVNEmpty.h */,
+				B371D87B1D81ADDC0090508C /* UIImage+KVNEmpty.m */,
+				B371D87C1D81ADDC0090508C /* UIImage+KVNImageEffects.h */,
+				B371D87D1D81ADDC0090508C /* UIImage+KVNImageEffects.m */,
+			);
+			path = KVNhud;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,6 +282,7 @@
 			files = (
 				B35319E41D80507300528A3F /* LaunchScreen.storyboard in Resources */,
 				B35319E11D80507300528A3F /* Assets.xcassets in Resources */,
+				B371D87F1D81ADDC0090508C /* KVNProgressView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,7 +353,10 @@
 				B3531A071D805C6200528A3F /* MainNavigationController.m in Sources */,
 				B35319D91D80507300528A3F /* AppDelegate.m in Sources */,
 				B35319D61D80507300528A3F /* main.m in Sources */,
+				B371D87E1D81ADDC0090508C /* KVNProgress.m in Sources */,
+				B371D8811D81ADDC0090508C /* UIImage+KVNImageEffects.m in Sources */,
 				B3531A031D80548200528A3F /* FMDBDataBase.m in Sources */,
+				B371D8801D81ADDC0090508C /* UIImage+KVNEmpty.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

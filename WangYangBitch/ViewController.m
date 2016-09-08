@@ -25,6 +25,12 @@
 @property(nonatomic,strong)UIButton *iphoneBtn;
 @property(nonatomic,strong)UILabel *titleLabel;
 
+
+
+// 数据刷新
+@property (assign, nonatomic) NSInteger page;
+@property (assign, nonatomic) NSInteger totalNum;
+@property (assign, nonatomic) NSInteger from;
 @end
 
 @implementation ViewController
@@ -32,6 +38,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject];
+    NSLog(@"%@",documentPath);
+    
+    self.from = 1;
     [self.view addSubview:self.topView];
     
     self.dataArray = [NSMutableArray array];
@@ -59,6 +69,95 @@
 
 }
 
+#pragma mark-----------上拉刷新下来加载--------
+
+#pragma mark--------刷新--------
+- (void)loadNewData
+{
+    self.page = self.from;
+    [self loadData];
+}
+
+- (void)loadMoreData
+{
+    
+    self.page++;
+    
+    [self loadData];
+}
+
+- (void)loadData
+{
+    
+    NSDictionary *dict = @{@"page":[NSString stringWithFormat:@"%ld",self.page]};
+    
+    [[FMDBDataBase sharedFMDBDataBase] queryDataWithPram:dict success:^(id  _Nullable responseObject) {
+        
+        if ([responseObject[@"status"] isEqualToString:@"0"]) {
+            
+//            if ([self.showTableView.mj_header isRefreshing]) {
+//                
+//                [self.dataArray removeAllObjects];
+//            }
+            
+            NSMutableArray *shoArr = [NSMutableArray array];
+            
+            self.totalNum = [responseObject[@"allData"] integerValue];
+            
+            NSArray *array = responseObject[@"info"];
+            
+            for (NSDictionary *dicc in array) {
+                
+                QuestionsAndAnswers *questAnser = [[QuestionsAndAnswers alloc]initWithDictionary:dicc];
+                
+                if (shoArr.count >= self.totalNum) {
+                    
+                    break;
+                }
+                
+                [shoArr addObject:questAnser];
+
+            }
+            
+            NSLog(@"dataArray:%@",self.dataArray);
+            self.dataArray = shoArr;
+            [self.showTableView reloadData];
+            [self.showTableView.mj_header endRefreshing];
+            [self.showTableView.mj_footer endRefreshing];
+
+            
+        }else{
+            
+            [KVNProgress showErrorWithStatus:responseObject[@"msg"]];
+            [self.showTableView.mj_header endRefreshing];
+            [self.showTableView.mj_footer endRefreshing];
+
+        }
+        
+    } failure:^(id  _Nullable errorObject) {
+        
+        [KVNProgress showErrorWithStatus:errorObject];
+        [self.showTableView.mj_header endRefreshing];
+        [self.showTableView.mj_footer endRefreshing];
+
+    } fromClassName:NSStringFromClass([self class])];
+}
+
+- (void)setTotalNum:(NSInteger)totalNum
+{
+    _totalNum = totalNum;
+    
+    if (self.dataArray.count >= _totalNum) {
+        
+        [self.showTableView.mj_footer endRefreshingWithNoMoreData];
+        
+    }
+    else
+        [self.showTableView.mj_footer resetNoMoreData];
+}
+
+#pragma mark----------轻扫----------------
+
 -(void)swipeAction:(UISwipeGestureRecognizer *)swipe{
     
     self.showTableView.alpha = 1;
@@ -78,7 +177,9 @@
     
     [self.view addSubview:self.showTableView];
     
-    self.showTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(getData)];
+    self.showTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+    self.showTableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+
     [self.showTableView.mj_header beginRefreshing];
     
     
@@ -170,6 +271,11 @@
     
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    return 20;
+}
+
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -177,16 +283,36 @@
         
         QuestionsAndAnswers *questAnser = self.dataArray[indexPath.row];
         
-        [[FMDBDataBase sharedFMDBDataBase]deleteData:questAnser.question];
+//        [[FMDBDataBase sharedFMDBDataBase]deleteData:questAnser.question];
+//        
+//        [self.dataArray removeObjectAtIndex:indexPath.row];
         
-        [self.dataArray removeObjectAtIndex:indexPath.row];
+        [[FMDBDataBase sharedFMDBDataBase] deleteData:questAnser.question success:^(id  _Nullable responseObject) {
+            
+            if ([responseObject[@"status"] isEqualToString:@"0"]) {
+                
+                [KVNProgress showSuccessWithStatus:responseObject[@"info"]];
+                
+                [self.dataArray removeObjectAtIndex:indexPath.row];
+                
+                // 创建indexPath
+                NSIndexPath *ind = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+                
+                [tableView deleteRowsAtIndexPaths:@[indexPath,ind] withRowAnimation:(UITableViewRowAnimationFade)];
+         
+            }else{
+                
+                [KVNProgress showErrorWithStatus:responseObject[@"msg"]];
+            }
+            
+        } failure:^(id  _Nullable errorObject) {
+            
+            [KVNProgress showErrorWithStatus:errorObject];
+
+            
+        } fromClassName:NSStringFromClass([self class])];
         
-        // 创建indexPath
-        NSIndexPath *ind = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
-        
-        //        NSIndexPath *ind2 = [NSIndexPath indexPathWithIndex:indexPath.section];
-        
-        [tableView deleteRowsAtIndexPaths:@[indexPath,ind] withRowAnimation:(UITableViewRowAnimationFade)];
+       
 
     }
     
@@ -226,9 +352,29 @@
         questAnswer.question = question;
         questAnswer.answer   = answer;
         
-        [[FMDBDataBase sharedFMDBDataBase]insertData:questAnswer];
+//        [[FMDBDataBase sharedFMDBDataBase]insertData:questAnswer];
+        [[FMDBDataBase sharedFMDBDataBase] insertData:questAnswer success:^(id  _Nullable responseObject) {
+            
+            if ([responseObject[@"status"] isEqualToString:@"0"]) {
+                
+                [KVNProgress showSuccessWithStatus:responseObject[@"info"]];
+                [self.showTableView.mj_header beginRefreshing];
+
+                
+            }else{
+                
+                [KVNProgress showErrorWithStatus:responseObject[@"msg"]];
+            }
+            
+        } failure:^(id  _Nullable errorObject) {
+            
+            [KVNProgress showErrorWithStatus:errorObject];
+
+            
+        } fromClassName:NSStringFromClass([self class])];
         
-        [self.showTableView.mj_header beginRefreshing];
+        
+//        [self.showTableView.mj_header beginRefreshing];
         
     }else{
         

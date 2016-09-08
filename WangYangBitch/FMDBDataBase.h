@@ -21,11 +21,32 @@ singleton_interface(FMDBDataBase)
 //增
 - (void)insertData:(QuestionsAndAnswers *)QuestionsAndAnswers;
 
+// 加强版增加
+- (void)insertData:(QuestionsAndAnswers * _Nonnull)questionsandanswers
+           success:(nullable void (^)(id _Nullable responseObject))success
+           failure:(nullable void (^)(id _Nullable errorObject))failure
+     fromClassName:(NSString * _Nonnull)className;
+
+
+
+
 //删
 - (void)deleteData:(NSString *)question;
 
+// 删除增强版
+- (void)deleteData:(NSString *_Nonnull)question
+           success:(nullable void (^)(id _Nullable responseObject))success
+           failure:(nullable void (^)(id _Nullable errorObject))failure
+     fromClassName:(NSString * _Nonnull)className;
+
 //查
 - (NSArray *)queryData;
+
+// 查询增强版
+- (void)queryDataWithPram:(NSDictionary *_Nonnull)dict
+                  success:(nullable void (^)(id _Nullable responseObject))success
+                  failure:(nullable void (^)(id _Nullable errorObject))failure
+            fromClassName:(NSString * _Nonnull)className;
 
 //改
 //- (void)updateData:(NSString *)question name:(NSString *)answer;

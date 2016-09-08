@@ -16,5 +16,7 @@
 
 @property(nonatomic,strong)NSString *answer;
 
+-(instancetype)initWithDictionary:(NSDictionary *)dic;
+
 
 @end
